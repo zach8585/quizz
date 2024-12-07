@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Quiz Game</title>
+    <link rel="stylesheet" href="styles.css"> <!-- this will link up the css page -->
+</head>
+<body>
+    <div id="quiz-container">
+        <h1>Car Quiz Game</h1> <!-- Title of game -->
+        
+        <!-- Displaying the question -->
+        <p id="question">What was the first car brand ever made?</p> 
+
+        <!-- List of choices, buttons will be added dynamically -->
+        <ul id="choices">  
+        </ul>
+
+        <!-- Display the score -->
+        <p id="score">Score: 0</p>
+
+        <!-- message after each answer -->
+        <p id="feedback"></p>
+
+        <!-- Button to move to the next question -->
+        <button id="next-question" onclick="nextQuestion()" style="display:none;">Next Question</button>
+    </div>
+
+    <script>
+        // Initialize the score and question 
+        let score = 0;
+        let currentQuestionIndex = 0;
+
+        // List of questions, options, and correct answers
+        const questions = [
+            {
+                question: "What was the first car brand ever made?",
+                options: ["Ford", "Chevrolet", "Mercedes-Benz", "Toyota"],
+                correctAnswer: "Mercedes-Benz",
+            },
+            {
+                question: "Which car company produced the Model T?",
+                options: ["Ford", "Chevrolet", "BMW", "Volkswagen"],
+                correctAnswer: "Ford",
+            },
+            {
+                question: "Which company makes the famous '911' sports car?",
+                options: ["Porsche", "Ferrari", "Lamborghini", "Nissan"],
+                correctAnswer: "Porsche",
+            },
+            {
+                question: "Which car brand is known for its luxury vehicles, like the S-Class?",
+                options: ["BMW", "Mercedes-Benz", "Audi", "Tesla"],
+                correctAnswer: "Mercedes-Benz",
+            },
+            {
+                question: "Which car company is associated with the 'Civic' model?",
+                options: ["Toyota", "Honda", "Nissan", "Ford"],
+                correctAnswer: "Honda",
+            }
+        ];
+
+        // Function to display the next question or end the quiz
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++; 
+                displayQuestion();
+            } else {
+                endQuiz(); // End the quiz when there are no more questions
+            }
+        }
+
+        // Function to display the current question 
+        function displayQuestion() {
+            const question = questions[currentQuestionIndex]; // Get the current question
+            document.getElementById("question").textContent = question.question; 
+
+            const options = document.getElementById("choices");
+            options.innerHTML = '';  // Clear any previous options
+
+            // Loop through the options and create buttons for each one
+            question.options.forEach(option => {
+                const li = document.createElement("li"); // Create a list item for each option
+                const button = document.createElement("button"); // Create a button for each option
+                button.textContent = option; // Set button text to the option value
+                button.onclick = function () { checkAnswer(option) }; // Add click event to check the answer
+                li.appendChild(button); // Append the button to the list item
+                options.appendChild(li); // Append the list item to the choices list
+            });
+
+            // Reset feedback and hide the 'Next Question' button initially
+            document.getElementById("feedback").textContent = '';
+            document.getElementById("next-question").style.display = "none";
+        }
+
+        // Function to check the answer and update score
+        function checkAnswer(selectedAnswer) {
+            const correctAnswer = questions[currentQuestionIndex].correctAnswer; // Get the correct answer for current question
+            if (selectedAnswer === correctAnswer) {
+                score++; // Increment score for correct answer
+                document.getElementById("feedback").textContent = "Correct!"; // Show feedback message
+            } else {
+                document.getElementById("feedback").textContent = "Incorrect!"; // Show incorrect feedback
+            }
+
+            // Update score display
+            document.getElementById("score").textContent = `Score: ${score}`;
+
+            // Show the 'Next Question' button after selecting an answer
+            document.getElementById("next-question").style.display = "inline";
+        }
+
+        // Function to end the quiz and show the final score
+        function endQuiz() {
+            document.getElementById("quiz-container").innerHTML = `
+                <h1>Quiz Over!</h1> <!-- Show the quiz over message -->
+                <p>Your final score is: ${score}</p> <!-- Display the final score -->
+                <button onclick="restartQuiz()">Restart Quiz</button> <!-- Restart button -->
+            `;
+        }
+
+        // Function to restart the quiz and reset values
+        function restartQuiz() {
+            score = 0; // Reset score to 0
+            currentQuestionIndex = 0; // Reset question index to 0
+            document.getElementById("quiz-container").innerHTML = `
+                <h1>Car Quiz Game</h1>
+                <p id="question">What was the first car brand ever made?</p> <!-- Placeholder question -->
+                <ul id="choices"></ul> <!-- Empty list for options -->
+                <p id="score">Score: 0</p> <!-- Reset score display -->
+                <p id="feedback"></p> <!-- Reset feedback display -->
+                <button id="next-question" onclick="nextQuestion()" style="display:none;">Next Question</button> <!-- Hide next button initially -->
+            `;
+            displayQuestion(); // Call displayQuestion to start the quiz again
+        }
+
+        // Initialize the quiz by displaying the first question
+        displayQuestion();
+    </script>
+</body>
+</html>
